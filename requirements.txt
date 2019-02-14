@@ -1,0 +1,3 @@
+wikidata
+matplotlib
+numpy

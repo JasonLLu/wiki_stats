@@ -1,4 +1,3 @@
-from pprint import pprint
 from wikidata.client import Client
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,7 +10,7 @@ def load():
 	instance_count = {}
 	subclass_id =  {}
 	subclass_count = {}
-	with open('../wikidata/truncate50000.json', 'r') as f:
+	with open('data/data.json', 'r') as f:
 		data = json.load(f)
 		for ent in data:
 			ent_type = ent['type']
@@ -78,9 +77,9 @@ def plot(count):
 
 
 if __name__ == '__main__':
-	# instance_count, subclass_count = load()
-	# save_obj(instance_count, 'instance')
-	# save_obj(subclass_count, 'subclass')
+	instance_count, subclass_count = load()
+	save_obj(instance_count, 'instance')
+	save_obj(subclass_count, 'subclass')
 	instance_count = load_obj('instance')
 	subclass_count = load_obj('subclass')
 	plot(instance_count)
