@@ -10,6 +10,8 @@ def load():
 	instance_count = {}
 	subclass_id =  {}
 	subclass_count = {}
+	relationships_count = {}
+	relationships_id = {}
 	with open('data/data.json', 'r') as f:
 		data = json.load(f)
 		for ent in data:
@@ -39,6 +41,27 @@ def load():
 					else:
 						subclass_id[id] = 1
 
+		# for property in ent['claims'].keys():
+		# 	for item in ent['claims'][property]:
+		# 		#print(item)
+		# 		print(item['mainsnak']['datavalue']['value'].keys())
+		# 		# id = item['mainsnak']['datavalue']['value']['numeric-id']
+		# 		# if id in relationships_id.keys():
+		# 		# 	subclass_id[id] += 1
+		# 		# else:
+		# 		# 	subclass_id[id] = 1
+
+
+		for property in ent['claims'].keys():
+			if property in relationships_count:
+				relationships_id[property] += 1
+			else:
+				relationships_id[property] = 1
+
+		for key in ent['claims'].keys():
+			entity = client.get(key, load = 'True')
+			relationships_count[str(entity.label)] = relationships_id[key]
+
 		for key in instance_id.keys():
 			entity = client.get(key, load = 'True')
 			instance_count[str(entity.label)] = instance_id[key]
@@ -47,7 +70,9 @@ def load():
 			entity = client.get(key, load = 'True')
 			subclass_count[str(entity.label)] = subclass_id[key]
 
-	return instance_count, subclass_count
+
+
+	return instance_count, subclass_count, relationships_count
 
 		# print(sorted(instance_id.items(), key=lambda d: d[1], reverse = True))
 		# print(sorted(subclass_id.items(), key=lambda d: d[1], reverse = True))
@@ -77,11 +102,17 @@ def plot(count):
 
 
 if __name__ == '__main__':
-	instance_count, subclass_count = load()
+	instance_count, subclass_count, relationships_count = load()
+
 	save_obj(instance_count, 'instance')
 	save_obj(subclass_count, 'subclass')
+	save_obj(relationships_count, 'relationships')
+
 	instance_count = load_obj('instance')
 	subclass_count = load_obj('subclass')
+	relationships_count = load_obj('relationships')
+
 	plot(instance_count)
 	plot(subclass_count)
+	plot(relationships_count)
 	
